@@ -1,0 +1,17 @@
+{% extends "master.twig" %}
+
+{% block page %}
+
+<h3>Wellcome to application</h3>
+
+<button id="testbutton" type="button" class="btn btn-primary">Click me</button>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#testbutton').click(function () {
+            alert("It works boys!");
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,6 @@
+/vendor/
+/.dcoker/
+.env
+.gitignore
+Dockerfile
+composer.lock

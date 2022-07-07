@@ -1,0 +1,54 @@
+{
+    "name": "amplimed/amplimed_slim",
+    "description": "A Slim Framework skeleton application for rapid development of Amplimed PHP applications",
+    "keywords": [
+        "microframework",
+        "rest",
+        "router",
+        "psr7"
+    ],
+    "authors": [
+        {
+            "name": "Rodrigo Levinski",
+            "email": "rodrigo@amplimed.com.br",
+            "homepage": "https://www.linkedin.com/in/rodrigo-levinski-97655116b/"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "ext-json": "*",
+        "datadog/dd-trace": "^0.75.0",
+        "firebase/php-jwt": "^6.2",
+        "illuminate/database": "^9.19",
+        "monolog/monolog": "^2.7",
+        "php-di/php-di": "^6.4",
+        "phpoption/phpoption": "^1.8",
+        "slim/psr7": "^1.5",
+        "slim/slim": "^4.10",
+        "twig/twig": "^3.4"
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "files" : [
+        "app/functions/helpers.php"
+    ],
+    "scripts": {
+        "start": "php -S localhost:8080 -t public",
+        "test": "phpunit"
+    }
+}
