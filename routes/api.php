@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 use App\Application\Middleware\AuthorizationMiddleware;
-use App\Controllers\DocumentController;
+use App\Application\Middleware\JsonBodyParserMiddleware;
+use App\Controllers\StackController;
 use App\Models\Bootstrap;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -14,19 +15,14 @@ return function (App $app) {
     
     $container = $app->getContainer();    
     Bootstrap::load($container);
+    $app->group('', function (RouteCollectorProxy $auth) {
 
-    //Grupo de rotas autenticadas
-    $app->group('', function (RouteCollectorProxy $group) {
-
-        header("Content-type: application/json");
-
-        $group->get('/auth', function (Request $request, Response $response, array $args) {
-            $response->getBody()->write('Rota autenticada');
-            return $response;
-        })->setName('authorized');
-
-        $group->get('/documents', [DocumentController::class, 'index'])->setName('documents');
-
-    })->add(new AuthorizationMiddleware());
+        $auth->get('/stack/{stack_name}', [StackController::class, 'getStackByName'])->setName('get_stack_by_name');
+        $auth->post('/stack', [StackController::class, 'implementStack'])->setName('implement_stack');
+        $auth->put('/stack/{stack_name}', [StackController::class, 'updateStackByName'])->setName('update_stack_by_name');
+        
+        $auth->post('/webhook/{stack_name}', [StackController::class, 'webhook'])->setName('webhook');
+        
+    })->add(new AuthorizationMiddleware())->add(new JsonBodyParserMiddleware());
 
 };
