@@ -1,0 +1,63 @@
+
+-- MYSQL
+CREATE TABLE environments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) DEFAULT NULL,
+    slug VARCHAR(255) DEFAULT NULL,
+    env ENUM('DEV', 'STG', 'PROD') DEFAULT 'DEV',
+    content TEXT,
+    content_type ENUM('SECRET', 'PLAIN') DEFAULT 'PLAIN',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE yamls (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) DEFAULT NULL,
+    slug VARCHAR(255) DEFAULT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE versions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    refer_id INT DEFAULT NULL,
+    refer_type ENUM('ENV', 'YAML') DEFAULT 'ENV',
+    content TEXT,
+    version_date TIMESTAMP DEFAULT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- POSTGRES
+CREATE TYPE content_types AS ENUM ('SECRET', 'PLAIN');
+CREATE TYPE envs AS ENUM ('DEV', 'STAGING', 'PRODUCTION');
+CREATE TYPE version_types AS ENUM ('ENV', 'YAML');
+CREATE TABLE environments (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) DEFAULT NULL,
+    slug VARCHAR(255) DEFAULT NULL,
+    env envs DEFAULT 'DEV',
+    content TEXT,
+    content_type content_types DEFAULT 'PLAIN',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL
+);
+CREATE TABLE yamls (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) DEFAULT NULL,
+    slug VARCHAR(255) DEFAULT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP DEFAULT NULL
+);
+CREATE TABLE versions (
+    id SERIAL PRIMARY KEY,
+    refer_id INT DEFAULT NULL,
+    refer_type version_types DEFAULT 'ENV',
+    content TEXT,
+    version_date TIMESTAMP DEFAULT NULL
+);

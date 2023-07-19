@@ -1,0 +1,188 @@
+{% extends "master.twig" %}
+
+{% block styles %}
+    <style>
+        .yaml-editor, .editor-preview {
+            border-radius: 6px;
+            box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%), 0 3px 1px -2px rgb(0 0 0 / 20%);
+            font-family: 'Source Code Pro', monospace;
+            font-size: 15px;
+            font-weight: 400;
+            min-height: 65vh;
+            letter-spacing: normal;
+            line-height: 16px;
+            padding: 5px;
+            tab-size: 2;
+            border-color: black;
+            background-color: black;
+            color: #ffffff;
+        }
+    </style>
+{% endblock %}
+
+{% block page %}
+    <div class="p-4" page="yaml">
+        <div class="row justify-content-around">
+            <h3 class="col-12 col-lg-6">Yamls</h3>
+            <div class="col-12 col-lg-6 text-end">
+                <button b-add-yaml type="button" class="btn btn-primary mb-2">
+                    <i class="fa fa-plus"></i>
+                    Add Yaml
+                </button>
+            </div>
+            <div class="col-12 d-flex align-items-stretch">
+                <div class="card w-100">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table text-nowrap mb-0 align-middle">
+                                <thead class="text-dark fs-4">
+                                    <tr>
+                                        <th class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0">Id</h6>
+                                        </th>
+                                        <th class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0">Name</h6>
+                                        </th>
+                                        <th class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0">Identifier</h6>
+                                        </th>
+                                        <th class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0">Updated at</h6>
+                                        </th>
+                                        <th class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0">Actions</h6>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for yaml in yamls %}
+                                        <tr yaml={{yaml.id}}>
+                                            <td class="border-bottom-0">
+                                                <h6 class="fw-semibold mb-0">{{ yaml.id }}</h6>
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                {{ yaml.name }}
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                {{ yaml.slug }}
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                {{ yaml.updated_at }}
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                <button b-edit-yaml type="button" class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button b-versions type="button" title="See versions" class="btn btn-dark btn-sm">
+                                                    <i class="fa fa-list"></i>
+                                                </button>
+                                                <button b-delete-yaml type="button" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modals %}
+<!-- Modal -->
+<div class="modal fade" id="yaml-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="environment-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="environment-modalLabel">Yaml file</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <b>Name</b>
+                        <input class="form-control" name="name" f-yaml-name type="text" >
+                        <input type="hidden" name="id" f-yaml-id value="0" >
+                    </div> 
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 col-lg-">
+                        <b>Content</b>
+                        <div class="w-100 yaml-editor"></div>
+                        <input type="hidden" name="content" >
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                    Close
+                </button>
+                <button type="button" b-save-yaml class="btn btn-success">
+                    Save changes
+                    <i class="fa fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="versions-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="versions-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="versions-modalLabel">Versions</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table versions-table class="table text-nowrap mb-0 align-middle">
+                            <thead class="text-dark fs-4">
+                                <tr>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">Id</h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">Version Date</h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">Actions</h6>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="display:none;">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-primary" title="Restore this version" b-restore-version="">
+                            Restore this version
+                            <i class="fa fa-history"></i>
+                        </button>
+                        <button b-close-preview class="btn btn-danger">
+                            Close
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="editor-preview mt-2" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="assets/js/pages/yamls.js"></script>
+{% endblock %}

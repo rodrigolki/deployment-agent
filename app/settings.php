@@ -16,14 +16,13 @@ return function (ContainerBuilder $containerBuilder) {
                 'logError'            => false,
                 'logErrorDetails'     => false,
                 'db' => [
-                    'driver' => 'mysql',
+                    'driver' => 'pgsql',
                     'host' => $_SERVER['DB_HOST'] ?? "",
                     'database' => $_SERVER['DB_NAME'] ?? "",
                     'username' => $_SERVER['DB_USER'] ?? "",
                     'password' => $_SERVER['DB_PASSWORD'] ?? "",
-                    'charset'   => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
                     'prefix'    => '',
+                    'timezone' => 'America/Sao_Paulo',
                 ]
             ]);
         }

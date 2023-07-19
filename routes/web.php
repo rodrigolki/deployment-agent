@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Controllers\HomeController;
+use App\Application\Middleware\JsonBodyParserMiddleware;
+use App\Controllers\web\SecretsController;
+use App\Controllers\web\YamlsController;
 use Slim\App;
 use Slim\Psr7\Request ;
 use Slim\Psr7\Response ;
@@ -20,12 +22,7 @@ return function (App $app) {
         return $response;
     });
 
-    $app->get('/info', function (Request $request, Response $response) {
-        $response->getBody()->write( phpinfo() );
-        return $response;
-    });
-
     //Exemplo de rota com View
-    $app->get('/home', [HomeController::class, 'home']);
-
+    $app->get('/envs', [SecretsController::class, 'secrets'])->setName('secrets');
+    $app->get('/yamls', [YamlsController::class, 'yamls'])->setName('yamls');
 };
