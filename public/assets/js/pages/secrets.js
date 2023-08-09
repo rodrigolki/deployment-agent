@@ -198,3 +198,17 @@ $('#versions-modal').on('click','[b-see-version]',async function() {
     $('[versions-table]').parent().hide();
     prev_editor.updateCode(response.data);
 })
+
+$('[page="env"]').on('click','[b-link-env]',function() {
+    const ident = $(this).attr('b-link-env');
+    let link = window.location.origin + '/env-file/' + ident;
+
+    //coppy link to clipboard
+    let $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(link).select();
+    document.execCommand("copy");
+    $temp.remove();
+
+    alertify.success("Link copied to clipboard.");
+})

@@ -190,3 +190,16 @@ $('#versions-modal').on('click','[b-see-version]',async function() {
     prev_editor.updateCode(response.data);
 })
 
+$('[page="yaml"]').on('click','[b-link-yaml]',function() {
+    const ident = $(this).attr('b-link-yaml');
+    let link = window.location.origin + '/yaml-file/' + ident;
+
+    //coppy link to clipboard
+    let $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(link).select();
+    document.execCommand("copy");
+    $temp.remove();
+
+    alertify.success("Link copied to clipboard.");
+})
