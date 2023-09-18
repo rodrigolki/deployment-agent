@@ -34,6 +34,13 @@ COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # test install: php --ri=ddtrace
 RUN curl -LO https://github.com/DataDog/dd-trace-php/releases/latest/download/datadog-setup.php && php datadog-setup.php --php-bin=all
 
+RUN curl -LO "https://dl.k8s.io/release/v1.26.6/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+# Verify the installation
+RUN kubectl version --client
+
 # Comentar/Descomentar aqui pra instalar o composer
 RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
 RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer

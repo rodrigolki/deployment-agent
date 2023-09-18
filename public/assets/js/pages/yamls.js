@@ -65,37 +65,11 @@ async function deleteEnv(env) {
 }
 
 $('#yaml-modal').on('click','[b-save-yaml]',async function() {
-    if($('[f-yaml-name]').val() == '') {
-        alertify.warning('Please fill up yaml file name.');
-        return false;
-    }
 
-    if(yaml_editor.toString() == '') {
-        alertify.warning('Please fill up at least some commands on yaml file .');
-        return false;
-    }
-    
-    const response = await axiosRequest({ 
-        method : "post",
-        url: `/yaml`,
-        data : {
-            id: $('[f-yaml-id]').val(),
-            name: $('[f-yaml-name]').val(),
-            content: yaml_editor.toString()
-        }
-    });
-
-    // if (response.status == 400) {
-    //     alertify.warning("<b>Invalid .yaml</b><br>"+response.data.message);
-    //     return;
-    // }
-
-    if (!response.success){
-        alertify.warning("Something went wrong while saving yaml file.");
-        console.log(response);
+    let saved = await saveYamlFile();
+    if(!saved) {
         return;
     }
-
     alertify.success("Yaml saved.");
     setTimeout(() => {
         window.location.reload();
@@ -203,3 +177,94 @@ $('[page="yaml"]').on('click','[b-link-yaml]',function() {
 
     alertify.success("Link copied to clipboard.");
 })
+
+async function saveYamlFile(params) {
+    if($('[f-yaml-name]').val() == '') {
+        alertify.warning('Please fill up yaml file name.');
+        return false;
+    }
+
+    if(yaml_editor.toString() == '') {
+        alertify.warning('Please fill up at least some commands on yaml file .');
+        return false;
+    }
+    
+    const response = await axiosRequest({ 
+        method : "post",
+        url: `/yaml`,
+        data : {
+            id: $('[f-yaml-id]').val(),
+            name: $('[f-yaml-name]').val(),
+            content: yaml_editor.toString()
+        }
+    });
+
+    // if (response.status == 400) {
+    //     alertify.warning("<b>Invalid .yaml</b><br>"+response.data.message);
+    //     return;
+    // }
+
+    if (!response.success){
+        alertify.warning("Something went wrong while saving yaml file.");
+        console.log(response);
+        return false;
+    }
+
+    return true;
+}
+
+$('#yaml-modal').on('click','[b-apply-yaml]',async function() {
+    alertify.confirm("Confirm", "Are you sure you want to apply this deployment on kubernetes?",
+    function(){
+        applyDeployment();
+    },
+    function(){
+        alertify.warning('Canceled');
+    }
+);
+
+    
+})
+
+$('#yaml-modal').on('click','[b-delete-yaml]',async function() {
+    alertify.confirm("Confirm", "Are you sure you want to delete this deployment on kubernetes?",
+        function(){
+            deleteDeployment();
+        },
+        function(){
+            alertify.warning('Canceled');
+        }
+    );
+})
+
+async function applyDeployment() {
+    let saved = await saveYamlFile();
+    if(!saved) return;
+
+    const response = await axiosRequest({ 
+        method : "patch",
+        url: `/yaml/${$('[f-yaml-id]').val()}`,
+    });
+    console.log(response.data);
+    if (!response.success){
+        alertify.warning("Something went wrong while apply yaml file.");
+        console.log(response);
+        return;
+    }
+    alertify.success(`Yaml applyed <br> <b>${response.data.output}</b>`);
+}
+
+async function deleteDeployment() {
+    
+    const response = await axiosRequest({ 
+        method : "put",
+        url: `/yaml/${$('[f-yaml-id]').val()}`,
+    });
+    console.log(response.data);
+    if (!response.success){
+        alertify.warning("Something went wrong while delete yaml file.");
+        console.log(response);
+        return;
+    }
+    alertify.success(`Yaml deleted <br> <b>${response.data.output}</b>`);
+}

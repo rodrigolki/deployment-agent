@@ -154,6 +154,44 @@ class YamlsController extends Controller{
         return $response;
     }
 
+    public function apply(Request $request, Response $response, array $args): ResponseInterface
+    {
+        $yaml = Yaml::where('id', $args['id'] ?? 0)->first();
+        if($yaml){
+            
+            $cmd = "kubectl apply -f {$_SERVER['APP_URL']}/yaml-file/{$yaml->slug}?authorization={$_SERVER['AUTH_SECRET']}";
+    
+            $output = shell_exec($cmd);
+            $response->getBody()->write(json_encode([
+                "message" => "Yaml applied",
+                "output" => str_replace("\n", "</br>", $output)
+            ]));
+
+        }else{
+            $response = $response->withStatus(404);
+        }
+        return $response;
+    }
+    
+    public function detach(Request $request, Response $response, array $args): ResponseInterface
+    {
+        $yaml = Yaml::where('id', $args['id'] ?? 0)->first();
+        if($yaml){
+            
+            $cmd = "kubectl delete -f {$_SERVER['APP_URL']}/yaml-file/{$yaml->slug}?authorization={$_SERVER['AUTH_SECRET']}";
+    
+            $output = shell_exec($cmd);
+            $response->getBody()->write(json_encode([
+                "message" => "Yaml deleted",
+                "output" => str_replace("\n", "</br>", $output)
+            ]));
+
+        }else{
+            $response = $response->withStatus(404);
+        }
+        return $response;
+    }
+
 }
 
 ?>

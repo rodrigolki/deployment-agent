@@ -45,6 +45,8 @@ return function (App $app) {
             $auth->put('/restore/{id}', [YamlsController::class, 'restore_version']);
             $auth->post('', [YamlsController::class, 'save']);
             $auth->get('/{id}', [YamlsController::class, 'get']);
+            $auth->put('/{id}', [YamlsController::class, 'detach']);
+            $auth->patch('/{id}', [YamlsController::class, 'apply']);
             $auth->delete('/{id}', [YamlsController::class, 'delete']);
         });
         
